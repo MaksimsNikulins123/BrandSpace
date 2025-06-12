@@ -15,7 +15,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/api/user', require("./routes/users"));
+
 app.use('/api/employees', require("./routes/employees"));
+
+app.use('/api/admin', require("./routes/admin"));
+app.use('/api/stuff', require("./routes/stuff"));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
