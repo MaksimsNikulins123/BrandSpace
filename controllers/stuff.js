@@ -3,7 +3,7 @@ const brypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 /**
- * @route POST /api/user/login
+ * @route POST /api/stuff/login
  * @desс Логин
  * @access Public
  */
@@ -15,22 +15,22 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Please fill required filds" });
     }
 
-    const user = await prisma.user.findFirst({
+    const stuff = await prisma.stuff.findFirst({
       where: {
         email,
       },
     });
 
     const isPasswordCorrect =
-      user && (await brypt.compare(password, user.password));
+      stuff && (await brypt.compare(password, stuff.password));
     const secret = process.env.JWT_SECRET;
 
-    if (user && isPasswordCorrect && secret) {
+    if (stuff && isPasswordCorrect && secret) {
       res.status(200).json({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        token: jwt.sign({ id: user.id }, secret, { expiresIn: "30d" }),
+        id: stuff.id,
+        email: stuff.email,
+        name: stuff.name,
+        token: jwt.sign({ id: stuff.id }, secret, { expiresIn: "30d" }),
       });
     } else {
       return res.status(400).json({ message: "Incorect login or password" });
@@ -42,7 +42,7 @@ const login = async (req, res) => {
 
 /**
  *
- * @route POST /api/user/register
+ * @route POST /api/stuff/register
  * @desc Регистрация
  * @access Public
  */
@@ -55,22 +55,24 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "Please fill required fild" });
     }
 
-    const registeredUser = await prisma.user.findFirst({
+    const registeredStuff = await prisma.stuff.findFirst({
       where: {
         email,
       },
-    }); 
+    });
+ 
 
-    if (registeredUser) {
+    if (registeredStuff) {
       return res
         .status(400)
-        .json({ message: "User with this email already exists" });
+        .json({ message: "Stuff with this email already exists" });
     }
+
 
     const salt = await brypt.genSalt(10);
     const hashedPassword = await brypt.hash(password, salt);
-
-    const user = await prisma.user.create({
+    // console.log(hashedPassword)
+    const stuff = await prisma.stuff.create({
       data: {
         email,
         name,
@@ -78,19 +80,19 @@ const register = async (req, res) => {
       },
     });
 
-
     const secret = process.env.JWT_SECRET;
 
-    if (user && secret) {
+    if (stuff && secret) {
       res.status(201).json({
-        id: user.id,
-        email: user.email,
+        id: stuff.id,
+        email: stuff.email,
         name,
-        token: jwt.sign({ id: user.id }, secret, { expiresIn: "30d" }),
+        token: jwt.sign({ id: stuff.id }, secret, { expiresIn: "30d" }),
       });
     } else {
       return res.status(400).json({ message: "Failed to create new user" });
     }
+
   } catch {
     res.status(500).json({ message: "Sorry, something went wrong" });
   }
@@ -98,12 +100,12 @@ const register = async (req, res) => {
 
 /**
  *
- * @route GET /api/user/current
+ * @route GET /api/stuff/current
  * @desc Текущий пользователь
  * @access Private
  */
 const current = async (req, res) => {
-  return res.status(200).json(req.user);
+  return res.status(200).json(req.stuff);
 };
 
 module.exports = {

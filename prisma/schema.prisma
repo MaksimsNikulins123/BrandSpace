@@ -18,6 +18,7 @@ model User {
   createdEmployee Employee[]
 }
 
+
 model Employee {
   id        String @id @default(uuid())
   firstName String
@@ -26,14 +27,19 @@ model Employee {
   address   String
   user      User   @relation(fields: [userId], references: [id])
   userId    String
+  
 }
+
+
 
 model Stuff {
   id              String     @id @default(uuid())
   email           String
   password        String
   name            String
+  role            String     @default("USER")
   createdBrandRow BrandRow[]
+  createdAt       DateTime  @default(now())
 }
 
 model BrandRow {
