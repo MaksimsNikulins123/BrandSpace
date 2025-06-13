@@ -38,11 +38,25 @@ model Stuff {
   password        String
   name            String
   role            String     @default("USER")
-  createdBrandRow BrandRow[]
+  createdNewItem StorehouseA[]
   createdAt       DateTime  @default(now())
 }
 
-model BrandRow {
+// model BrandRow {
+//   id       String @id @default(uuid())
+//   brand    String
+//   model    String
+//   count    Int
+//   uniqKey  String
+//   image    String
+//   location String
+
+//   stuff   Stuff  @relation(fields: [stuffId], references: [id])
+//   stuffId String
+// }
+
+
+model StorehouseA {
   id       String @id @default(uuid())
   brand    String
   model    String
