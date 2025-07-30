@@ -87,9 +87,10 @@ const add = async (req, res) => {
  * @access Private
  */
 const remove = async (req, res) => {
-    const {
-        id
-    } = req.body;
+    // const {
+    //     id
+    // } = req.body;
+    const id = req.query.id;
 
     try {
         await prisma.storehouseA.delete({
@@ -101,7 +102,7 @@ const remove = async (req, res) => {
         res.status(204).json("OK");
     } catch {
         res.status(500).json({
-            message: "Failed to delete employee"
+            message: "Failed to delete item"
         });
     }
 };
@@ -136,11 +137,13 @@ const edit = async (req, res) => {
  * @desc Получение сотрудника
  * @access Private
  */
-const storedItems = async (req, res) => {
-    const {
-        id
-    } = req.params; // http://localhost:8000/api/employees/9fe371c1-361f-494a-9def-465959ecc098
+const currentItem = async (req, res) => {
+    // const {id} = req.params; // http://localhost:8000/api/employees/9fe371c1-361f-494a-9def-465959ecc098
+    const id = req.query.id; // http://localhost:8000/api/employees/9fe371c1-361f-494a-9def-465959ecc098
+    // const { id } = req.body;
 
+
+    // console.log(req.query.id)
     try {
         const storedItem = await prisma.storehouseA.findUnique({
             where: {
@@ -161,5 +164,5 @@ module.exports = {
     add,
     remove,
     edit,
-    storedItems,
+    currentItem,
 };
